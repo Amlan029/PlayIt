@@ -17,4 +17,11 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static("public"))
 //To perform CRUD operation on the cookie that is saved in users browser
 app.use(cookieParser())
+
+//routes import
+import userRouter from "./routes/user.routes.js"
+
+//routes declaration
+app.use("/api/v1/users",userRouter)
+
 export {app}
