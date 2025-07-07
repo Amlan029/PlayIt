@@ -2,7 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import { User } from "../models/user.model.js"
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import { uploadOnCloudinary } from "../utils/cloudinary.js"
 const registerUser = asyncHandler(async (req, res)=> {
     //get data from body by req.body
     //validation - not empty
@@ -27,14 +27,25 @@ const registerUser = asyncHandler(async (req, res)=> {
     if(existedUser){
         throw new ApiError(409,"User with email or username Already Exists")
     }
+    // console.log(req.files);
     
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverLocalPath = req.files?.coverImage[0]?.path;
+    
+    
+    
+    // const coverLocalPath = req.files?.coverImage[0]?.path;
+    let coverLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+        coverLocalPath = req.files.coverImage[0].path;
+    }
+   
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar needed")
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
+    
+    
     const coverImage = await uploadOnCloudinary(coverLocalPath)
     if(!avatar){
         throw new ApiError(400,"Avatar needed")
